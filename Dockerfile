@@ -10,4 +10,4 @@ RUN pip install --upgrade pip \
 
 COPY app.py .
 
-CMD ["python", "app.py"]
+CMD ["uv", "run", "python", "app.py"]

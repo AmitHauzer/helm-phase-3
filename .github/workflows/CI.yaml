@@ -46,13 +46,10 @@ jobs:
       - name: Run Docker container
         run: docker run -d -p 5000:5000 --name flask-app flask-test
 
-      - name: Sleep for 30 seconds
+      - name: Sleep
         uses: jakejarvis/wait-action@master
         with:
-          time: '30s'
-
-      - name: Install test dependencies
-        run: uv sync --dev
+          time: '1s'
 
       - name: Run pytest
         run: uv run pytest
