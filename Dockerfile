@@ -10,4 +10,6 @@ RUN pip install --upgrade pip \
 
 COPY app.py .
 
+EXPOSE 5000
+
 CMD ["uv", "run", "python", "app.py"]
