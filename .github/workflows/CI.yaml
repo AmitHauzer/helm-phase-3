@@ -24,7 +24,7 @@ jobs:
 
       - name: Install dependencies with uv
         uses: ./.github/actions/uv-install-dev
-        
+
       - name: Run pylint
         run: uv run pylint app.py
 
@@ -46,8 +46,10 @@ jobs:
       - name: Run Docker container
         run: docker run -d -p 5000:5000 --name flask-app flask-test
 
-      - name: Wait for app to start
-        run: sleep 3
+      - name: Sleep for 30 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '30s'
 
       - name: Install test dependencies
         run: uv sync --dev
