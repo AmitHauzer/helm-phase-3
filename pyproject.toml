@@ -7,3 +7,11 @@ requires-python = ">=3.8"
 dependencies = [
     "flask>=3.0.3",
 ]
+
+[dependency-groups]
+dev = [
+    "pylint>=3.2.7",
+]
+
+[tool.uv]
+default-groups = []
