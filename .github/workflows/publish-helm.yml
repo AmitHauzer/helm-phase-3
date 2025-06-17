@@ -3,7 +3,7 @@ name: Helm Chart CI/CD
 on:
   push:
     branches:
-      - '**'  # all branches
+      - 'main'
 
 jobs:
   test:
