@@ -1,0 +1,60 @@
+name: CI - Test and Lint
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  python-lint:
+    name: Lint Python with pylint
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies with uv
+        uses: ./.github/actions/uv-install-dev
+        
+      - name: Run pylint
+        run: uv run pylint app.py
+
+  docker-integration-test:
+    name: Docker Integration Test
+    runs-on: ubuntu-latest
+    needs: python-lint
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies with uv
+        uses: ./.github/actions/uv-install-dev
+        
+      - name: Build Docker image
+        run: docker build -t flask-test .
+
+      - name: Run Docker container
+        run: docker run -d -p 5000:5000 --name flask-app flask-test
+
+      - name: Wait for app to start
+        run: sleep 3
+
+      - name: Install test dependencies
+        run: uv sync --dev
+
+      - name: Run pytest
+        run: uv run pytest
+
+      - name: Stop container
+        if: always()
+        run: docker rm -f flask-app
