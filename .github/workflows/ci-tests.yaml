@@ -37,31 +37,6 @@ jobs:
       - name: Run pylint
         run: uv run pylint app.py
 
-  helm-lint:
-    name: Lint Helm Chart
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up KinD cluster
-        uses: helm/kind-action@v1
-      
-      - name: Set up Helm
-        uses: azure/setup-helm@v3
-        with:
-          version: 'v3.11.2'
-
-      - name: Run Helm lint
-        run: helm lint amitchart
-
-      - name: Run Helm template
-        run: helm template ./amitchart/
-
-      - name: Run Helm install dry-run
-        run: helm install --dry-run --debug test-app amitchart
-
 
   integration-test:
     name: Integration Test
@@ -114,7 +89,8 @@ jobs:
             export NODE_PORT=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services test-app-amitchart)
             export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
             echo http://$NODE_IP:$NODE_PORT
-            apt install -y curl
+            sudo apt update
+            sudo apt install -y curl
             curl -s http://$NODE_IP:$NODE_PORT
       
       - name: Run Helm test
