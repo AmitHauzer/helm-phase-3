@@ -4,6 +4,7 @@ import pytest
 import subprocess
 
 
+@pytest.mark.docker
 def test_flask_app_responds():
     # Optional wait if the app starts slowly
     time.sleep(1)
@@ -23,7 +24,7 @@ def test_flask_app_responds_via_kubernetes():
     NODE_IP: str = subprocess.check_output(["kubectl", "get", "nodes", "--namespace", "default",
                                            "-o", 'jsonpath={.items[0].status.addresses[0].address}'], text=True).strip()
     URL: str = f"http://{NODE_IP}:{NODE_PORT}/"
-    print(f"Testing Flask app at {URL}")
+    print(f"Testing Flask app at: {URL}")
 
     response = requests.get(URL)
     assert response.status_code == 200

@@ -40,7 +40,7 @@ jobs:
           docker run -d -p 5000:5000 --name flask-app ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:latest
           
       - name: Run tests against Docker container
-        run: uv run pytest
+        run: uv run pytest tests/test_hello.py -m docker 
 
       - name: Clean up
         run: docker rm -f flask-app
