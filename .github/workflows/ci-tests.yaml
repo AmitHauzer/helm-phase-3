@@ -37,28 +37,6 @@ jobs:
       - name: Run pylint
         run: uv run pylint app.py
 
-  helm-lint:
-    name: Lint Helm Chart
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Helm
-        uses: azure/setup-helm@v3
-        with:
-          version: 'v3.11.2'
-
-      - name: Run Helm lint
-        run: helm lint amitchart
-
-      - name: Run Helm template
-        run: helm template ./amitchart/
-
-      - name: Run Helm install dry-run
-        run: helm install --dry-run --debug test-app amitchart
-
 
   integration-test:
     name: Integration Test
@@ -70,6 +48,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Set up KinD cluster
+        uses: helm/kind-action@v1
+        with:
+          cluster_name: kind
+      
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: 'v3.11.2'
+
       - name: Install dependencies with uv
         uses: ./.github/actions/uv-install-dev
         
@@ -80,24 +68,49 @@ jobs:
         run: docker run -d -p 5000:5000 --name flask-app ${{ env.DOCKER_IMAGE_NAME }}
 
       - name: Run pytest
-        run: uv run pytest
+        run: uv run pytest tests/test_hello.py -m docker 
 
       - name: Stop container
         if: always()
         run: docker rm -f flask-app
+      
+      - name: Run Helm lint
+        run: helm lint amitchart
 
-      - name: Set up Helm
-        uses: azure/setup-helm@v3
-        with:
-          version: 'v3.11.2'
+      - name: Run Helm template
+        run: helm template ./amitchart/
 
+      - name: Run Helm install dry-run
+        run: helm install --dry-run --debug test-app amitchart
+
+      - name: Load Docker image into kind cluster
+        run: kind load docker-image ${{ env.DOCKER_IMAGE_NAME }}:latest
+  
       - name: Install Helm chart
         run: |
             helm install ${{ env.HELM_RELEASE_NAME }} ./amitchart --set image.repository=${{ env.DOCKER_IMAGE_NAME }},image.tag=latest
+            helm list
+            kubectl get all
+            export NODE_PORT=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services test-app-amitchart)
+            export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
+            echo http://$NODE_IP:$NODE_PORT
+            
+      - name: Sleep
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '10s'
 
-      - name: Run Helm test
+      - name: Wait for Flask app to be ready
         run: |
-          helm test ${{ env.HELM_RELEASE_NAME }}
+          helm list
+          kubectl get all
+          export NODE_PORT=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services test-app-amitchart)
+          export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
+          echo http://$NODE_IP:$NODE_PORT
+          
+      - name: Test Flask app via kubernetes
+        run: | 
+            uv run pytest tests/test_hello.py -m kubernetes
 
       - name: Uninstall Helm release
         if: always()
