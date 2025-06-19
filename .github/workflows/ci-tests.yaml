@@ -98,7 +98,7 @@ jobs:
       - name: Sleep
         uses: jakejarvis/wait-action@master
         with:
-          time: '5s'
+          time: '10s'
 
       - name: Wait for Flask app to be ready
         run: |
