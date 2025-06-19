@@ -3,6 +3,8 @@ import time
 import pytest
 import subprocess
 
+URL_MESSAGE: str = "Hello, World!!!"
+
 
 @pytest.mark.docker
 def test_flask_app_responds():
@@ -10,7 +12,7 @@ def test_flask_app_responds():
     time.sleep(1)
     response = requests.get("http://localhost:5000/")
     assert response.status_code == 200
-    assert response.text.strip() == "Hello, World!"
+    assert response.text.strip() == URL_MESSAGE
 
 
 @pytest.mark.kubernetes
@@ -28,4 +30,4 @@ def test_flask_app_responds_via_kubernetes():
 
     response = requests.get(URL)
     assert response.status_code == 200
-    assert response.text.strip() == "Hello, World!"
+    assert response.text.strip() == URL_MESSAGE

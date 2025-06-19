@@ -1,17 +1,60 @@
 name: Helm Chart CI/CD
 
 on:
-  workflow_run:
-    workflows: ["Build and Push Docker"]
-    types:
-      - completed
+  push:
+    branches:
+      - main
 
 jobs:
-  publish:
+  docker-publish:
+    name: CD - Publish Docker Image
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_IMAGE_NAME: amitchart-phase3-flask
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: Install dependencies with uv
+        uses: ./.github/actions/uv-install-dev
+      
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          load: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:v0.${{github.run_number}}
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:latest
+
+      - name: Run Docker container for testing
+        run: |
+          docker run -d -p 5000:5000 --name flask-app ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:latest
+          
+      - name: Run tests against Docker container
+        run: uv run pytest tests/test_hello.py -m docker 
+
+      - name: Clean up
+        run: docker rm -f flask-app
+
+      - name: Push Docker images
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:v0.${{github.run_number}}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:latest
+
+  
+  helm-publish:
     name: CD - Publish Helm Chart
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    
+    needs: docker-publish
 
     steps:
       - name: Checkout repo
