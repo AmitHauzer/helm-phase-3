@@ -4,6 +4,7 @@ on:
   push:
     branches-ignore:
       - 'main'
+      - 'dev'
   pull_request:
     branches:
       - 'main'
@@ -98,7 +99,7 @@ jobs:
       - name: Sleep
         uses: jakejarvis/wait-action@master
         with:
-          time: '10s'
+          time: '12s'
 
       - name: Wait for Flask app to be ready
         run: |

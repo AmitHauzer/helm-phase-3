@@ -21,6 +21,7 @@ def test_flask_app_responds_via_kubernetes():
     # and that the service is accessible via the specified URL.
     # Replace with the actual service URL if needed.
 
+    time.sleep(1)
     NODE_PORT: str = subprocess.check_output(
         ["kubectl", "get", "--namespace", "default", "-o", 'jsonpath={.spec.ports[0].nodePort}', "services", "test-app-amitchart"], text=True).strip()
     NODE_IP: str = subprocess.check_output(["kubectl", "get", "nodes", "--namespace", "default",
