@@ -80,6 +80,9 @@ jobs:
 
       - name: Run Helm install dry-run
         run: helm install --dry-run --debug test-app amitchart
+
+      - name: Load Docker image into kind cluster
+        run: kind load docker-image ${{ env.DOCKER_IMAGE_NAME }}:latest
   
       - name: Install Helm chart
         run: |
