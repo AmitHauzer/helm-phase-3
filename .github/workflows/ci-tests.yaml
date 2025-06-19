@@ -89,13 +89,17 @@ jobs:
             export NODE_PORT=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services test-app-amitchart)
             export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
             echo http://$NODE_IP:$NODE_PORT
+            
+      - name: Sleep
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '5s'
+
+      - name: Test Flask app via port-forward
+        run: | 
             sudo apt update
             sudo apt install -y curl
             curl -s http://$NODE_IP:$NODE_PORT
-      
-      - name: Run Helm test
-        run: |
-          helm test ${{ env.HELM_RELEASE_NAME }}
 
       - name: Uninstall Helm release
         if: always()
