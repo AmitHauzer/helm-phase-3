@@ -100,7 +100,9 @@ jobs:
       - name: Install Helm chart
         run: |
             helm install ${{ env.HELM_RELEASE_NAME }} ./amitchart --set image.repository=${{ env.DOCKER_IMAGE_NAME }},image.tag=latest
-
+            helm list
+            kubectl get all
+      
       - name: Run Helm test
         run: |
           helm test ${{ env.HELM_RELEASE_NAME }}
