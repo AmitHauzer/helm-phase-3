@@ -89,7 +89,7 @@ jobs:
   
       - name: Install Helm chart
         run: |
-            helm install ${{ env.HELM_RELEASE_NAME }} ./amitchart --set image.repository=${{ env.DOCKER_IMAGE_NAME }},image.tag=latest
+            helm install ${{ env.HELM_RELEASE_NAME }} ./amitchart --set image.repository=${{ env.DOCKER_IMAGE_NAME }},image.tag=latest,image.pullPolicy=Never
             helm list
             kubectl get all
             export NODE_PORT=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services test-app-amitchart)
