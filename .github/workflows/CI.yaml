@@ -25,6 +25,9 @@ jobs:
       - name: Install dependencies with uv
         uses: ./.github/actions/uv-install-dev
 
+      - name: python version
+        run: uv run python --version
+        
       - name: Run pylint
         run: uv run pylint app.py
 
