@@ -31,7 +31,6 @@ jobs:
   docker-integration-test:
     name: Docker Integration Test
     runs-on: ubuntu-latest
-    needs: python-lint
 
     steps:
       - name: Checkout code
