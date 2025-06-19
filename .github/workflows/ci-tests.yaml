@@ -93,13 +93,19 @@ jobs:
       - name: Sleep
         uses: jakejarvis/wait-action@master
         with:
-          time: '5s'
+          time: '1s'
 
-      - name: Test Flask app via port-forward
+      - name: Wait for Flask app to be ready
+        run: |
+          helm list
+          kubectl get all
+          export NODE_PORT=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services test-app-amitchart)
+          export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
+          echo http://$NODE_IP:$NODE_PORT
+          
+      - name: Test Flask app via kubernetes
         run: | 
-            sudo apt update
-            sudo apt install -y curl
-            curl -s http://$NODE_IP:$NODE_PORT
+            uv run pytest tests/test_hello.py -m kubernetes
 
       - name: Uninstall Helm release
         if: always()
