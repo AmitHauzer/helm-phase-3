@@ -37,8 +37,6 @@ jobs:
       - name: Run pylint
         run: uv run pylint app.py
 
-      - name: debug test
-        run: cat status.txt
 
   docker-integration-test:
     name: Docker Integration Test
