@@ -1,4 +1,4 @@
-name: CI - Test and Lint
+name: CI - Tests and Lint
 
 on:
   push:
@@ -24,6 +24,8 @@ jobs:
 
       - name: Install dependencies with uv
         uses: ./.github/actions/uv-install-dev
+        with:
+          python-version: ${{ matrix.python-version }}
 
       - name: python version
         run: uv run python --version
