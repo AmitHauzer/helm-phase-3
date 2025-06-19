@@ -3,12 +3,12 @@ entries:
   amitchart:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2025-06-19T21:26:18.055545143Z"
+    created: "2025-06-19T22:38:53.847265145Z"
     description: A Helm chart for Kubernetes
-    digest: 6fb7a4ed451de5345aae426e4556e5170a8aac26d71faad2488432b010feda81
+    digest: 6990fbafc63a323e08c137d6a9c51e57058f8ac5ae5baf588e93edc1af83097a
     name: amitchart
     type: application
     urls:
     - https://amithauzer.github.io/helm-phase-3/amitchart-0.1.0.tgz
     version: 0.1.0
-generated: "2025-06-19T21:26:18.05510829Z"
+generated: "2025-06-19T22:38:53.846820907Z"
