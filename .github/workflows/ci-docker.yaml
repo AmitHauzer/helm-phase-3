@@ -9,7 +9,7 @@ env:
   DOCKER_IMAGE_NAME: amitchart-phase3-flask
 
 jobs:
-  build-test-push:
+  docker-build-test-push:
     runs-on: ubuntu-latest
 
     steps:
