@@ -1,9 +1,19 @@
 name: Install uv and sync dependencies
 description: Installs uv and syncs dependencies
+inputs:
+  python-version:
+    description: Python version to pin
+    default: ""
+    required: false
 runs:
   using: "composite"
   steps:
     - run: |
         curl -LsSf https://astral.sh/uv/install.sh | sh
+        PYTHON_VERSION="${{ inputs.python-version }}"
+        if [ -n "$PYTHON_VERSION" ]; then
+          echo "Pinning Python version to $PYTHON_VERSION"
+          uv python pin "$PYTHON_VERSION"
+        fi
         uv sync --dev
       shell: bash

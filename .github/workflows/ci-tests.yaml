@@ -1,9 +1,13 @@
-name: CI - Test and Lint
+name: CI - Tests and Lint
 
 on:
   push:
     branches-ignore:
       - 'main'
+  pull_request:
+    branches:
+      - 'main'
+      - 'dev'
 
 jobs:
   python-lint:
@@ -24,9 +28,15 @@ jobs:
 
       - name: Install dependencies with uv
         uses: ./.github/actions/uv-install-dev
+        with:
+          python-version: ${{ matrix.python-version }}
 
+      - name: python version
+        run: uv run python --version
+        
       - name: Run pylint
         run: uv run pylint app.py
+
 
   docker-integration-test:
     name: Docker Integration Test
@@ -44,11 +54,6 @@ jobs:
 
       - name: Run Docker container
         run: docker run -d -p 5000:5000 --name flask-app flask-test
-
-      - name: Sleep
-        uses: jakejarvis/wait-action@master
-        with:
-          time: '1s'
 
       - name: Run pytest
         run: uv run pytest
