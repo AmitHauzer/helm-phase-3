@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: amitchart-phase3-flask
+  repository: amithauzer/amitchart-phase3-flask
   tag: latest
   pullPolicy: IfNotPresent
 

@@ -1,0 +1,37 @@
+name: Helm Chart CI/CD
+
+on:
+  workflow_run:
+    workflows: ["Build and Push Docker"]
+    types:
+      - completed
+
+jobs:
+  publish:
+    name: CD - Publish Helm Chart
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: 'v3.11.2'
+
+      - name: Package chart
+        run: |
+          helm package amitchart
+          mkdir -p repo
+          mv *.tgz repo/
+          helm repo index repo/ --url https://amithauzer.github.io/helm-phase-3
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./repo
+          publish_branch: gh-pages
