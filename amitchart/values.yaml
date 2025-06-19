@@ -3,7 +3,7 @@ replicaCount: 1
 image:
   repository: amithauzer/amitchart-phase3-flask
   tag: latest
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 service:
   type: NodePort
