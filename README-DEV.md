@@ -2,8 +2,14 @@
 
 This repository demonstrates a DevOps workflow for containerizing, testing, and deploying a simple Python Flask application using Docker and Helm on Kubernetes. It also includes integration with Argo CD for GitOps-based continuous deployment to Kubernetes clusters.
 
-## Project Structure 🗂️
+## Requirements 📦
+- Python 3.8+
+- [uv](https://github.com/astral-sh/uv) (for local dev)
+- Docker
+- Kubernetes cluster (e.g., minikube, kind)
+- Helm 3
 
+## Project Structure 🗂️
 - `app.py`: Minimal Flask app returning "Hello, World!!!!!" on `/`.
 - `Dockerfile`: Containerizes the Flask app using Python 3.11 and [uv](https://github.com/astral-sh/uv) for dependency management.
 - `pyproject.toml`, `uv.lock`: Python dependencies and lock file.
@@ -73,13 +79,6 @@ uv run pytest tests/test_hello.py -m kubernetes  # Test on Kubernetes
 - Linting and tests run on PRs and pushes (see `.github/workflows/ci-tests.yaml`).
 - Docker images are built and pushed to Docker Hub on `main` branch (see `.github/workflows/ci-cd-helm.yml`).
 - Helm chart is packaged and published to GitHub Pages.
-
-## Requirements 📦
-- Python 3.8+
-- [uv](https://github.com/astral-sh/uv) (for local dev)
-- Docker
-- Kubernetes cluster (e.g., kind, minikube)
-- Helm 3
 
 ## Customization 🛠️
 - Edit `amitchart/values.yaml` to change image, service type, probes, etc.
