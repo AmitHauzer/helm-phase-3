@@ -27,7 +27,7 @@ This repository demonstrates a DevOps workflow for containerizing, testing, and 
 ## Getting Started 🏁
 
 > **Note for Users:**  
-> If you just want to install and use the application, please see [README-INSTALLATION.md](./README-INSTALLATION.md) for end-user instructions.  
+> If you just want to install and use the application, please see [README-HELM-INSTALLATION.md](./README-HELM-INSTALLATION.md) for end-user instructions.  
 > The following steps are intended for developers who want to build, test, or contribute to the project.
 
 ### Recommended Order for Developers
