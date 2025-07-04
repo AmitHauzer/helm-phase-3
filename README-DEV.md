@@ -1,6 +1,6 @@
-# helm-phase-3 🚀
+# Phase 3 && 4 🚀
 
-This repository demonstrates a DevOps workflow for containerizing, testing, and deploying a simple Python Flask application using Docker and Helm on Kubernetes.
+This repository demonstrates a DevOps workflow for containerizing, testing, and deploying a simple Python Flask application using Docker and Helm on Kubernetes. It also includes integration with Argo CD for GitOps-based continuous deployment to Kubernetes clusters.
 
 ## Project Structure 🗂️
 
@@ -18,12 +18,28 @@ This repository demonstrates a DevOps workflow for containerizing, testing, and 
 - **Dockerized** 🐳: Easily build and run the app in a container.
 - **Helm Chart** ⎈: Deploys the app to Kubernetes with customizable values.
 - **CI/CD** ⚙️: Automated linting, testing (Docker & Kubernetes), Docker image publishing, and Helm chart publishing via GitHub Actions.
-
 ## Getting Started 🏁
+
+> **Note for Users:**  
+> If you just want to install and use the application, please see [README-INSTALLATION.md](./README-INSTALLATION.md) for end-user instructions.  
+> The following steps are intended for developers who want to build, test, or contribute to the project.
+
+### Recommended Order for Developers
+
+1. **Run Locally (Python):**  
+  Set up your environment and run the app directly for rapid development and debugging.
+2. **Run with Docker:**  
+  Build and run the app in a container to ensure it works in a production-like environment.
+3. **Deploy to Kubernetes with Helm:**  
+  Use Helm to deploy the app to a Kubernetes cluster for integration testing or staging.
+4. **Run Tests:**  
+  Execute tests against both Docker and Kubernetes deployments to verify functionality.
+
+Follow the detailed instructions below for each step.
 
 ### 1. Run Locally (Python) 💻
 ```bash
-uv sync  # or pip install -r requirements.txt
+uv sync
 uv run python app.py
 # Visit http://localhost:5000
 ```
@@ -37,9 +53,14 @@ docker run -p 5000:5000 flask-test
 
 ### 3. Deploy to Kubernetes with Helm ⎈
 ```bash
-# Build and load Docker image to your cluster (e.g., kind)
-# helm install test-app ./amitchart --set image.repository=flask-test,image.tag=latest,image.pullPolicy=Never
-# See amitchart/templates/NOTES.txt for access instructions
+# 1. Start minikube
+minikube start
+
+# 2. Load the image into Minikube
+minikube image load flask-test:latest
+
+# 3. Deploy with Helm, using the local image
+helm install test-app ./amitchart --set image.repository=flask-test,image.tag=latest,image.pullPolicy=Never
 ```
 
 ### 4. Run Tests 🧪
