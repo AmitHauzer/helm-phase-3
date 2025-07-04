@@ -7,7 +7,7 @@ This guide is for customers who want to deploy the application using the provide
 - Access to a Kubernetes cluster (e.g., minikube, kind, EKS, GKE, AKS)
 - (Optional) Docker image available in a public registry (e.g., Docker Hub)
 
-## 1. Add the Helm Repository (if published)
+## 1. Add the Helm Repository
 ```bash
 helm repo add amitchart https://amithauzer.github.io/helm-phase-3
 helm repo update
